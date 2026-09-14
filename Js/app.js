@@ -1,5 +1,3 @@
-const WORK_SECONDS = 40;
-const REST_SECONDS = 20;
 
 function shuffle(array) {
   const copy = [...array];
