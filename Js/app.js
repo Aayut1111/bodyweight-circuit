@@ -98,7 +98,7 @@ function startTimer() {
       timerDisplay.textContent = formatTime(secondsLeft);
     },
     onComplete: () => {
-      console.log("workout complete");
+            finishWorkout();
     }
   });
   currentTimer.start();
@@ -111,4 +111,23 @@ pauseBtn.addEventListener("click", () => {
 
 skipBtn.addEventListener("click", () => {
   currentTimer.skip();
+});
+const summaryStats = document.getElementById("summary-stats");
+const summaryList = document.getElementById("summary-list");
+const restartBtn = document.getElementById("restart-btn");
+
+function finishWorkout() {
+  const uniqueNames = [...new Set(currentCircuit.map(ex => ex.name))];
+  summaryStats.textContent = `${currentCircuit.length} exercises completed.`;
+  summaryList.innerHTML = "";
+  uniqueNames.forEach(name => {
+    const li = document.createElement("li");
+    li.textContent = name;
+    summaryList.appendChild(li);
+  });
+  showView(summaryView);
+}
+
+restartBtn.addEventListener("click", () => {
+  showView(setupView);
 });
