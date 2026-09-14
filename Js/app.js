@@ -1,3 +1,18 @@
+const setupView = document.getElementById("setup-view");
+const workoutView = document.getElementById("workout-view");
+const summaryView = document.getElementById("summary-view");
+
+const setupForm = document.getElementById("setup-form");
+const phaseLabel = document.getElementById("phase-label");
+const exerciseName = document.getElementById("exercise-name");
+const exerciseInstructions = document.getElementById("exercise-instructions");
+const timerDisplay = document.getElementById("timer-display");
+const progressDots = document.getElementById("progress-dots");
+const pauseBtn = document.getElementById("pause-btn");
+const skipBtn = document.getElementById("skip-btn");
+
+let currentCircuit = [];
+let currentTimer = null;
 
 function shuffle(array) {
   const copy = [...array];
@@ -15,10 +30,7 @@ function buildCircuit(durationMinutes, focus, difficulty) {
     return focusMatch && difficultyMatch;
   });
 
-  // fallback: if the filters are too strict and match nothing, use the full list
-  // rather than generating an empty circuit
   const usablePool = pool.length > 0 ? pool : EXERCISES;
-
   const perExerciseSeconds = WORK_SECONDS + REST_SECONDS;
   const totalSeconds = durationMinutes * 60;
   const exerciseCount = Math.max(1, Math.floor(totalSeconds / perExerciseSeconds));
@@ -31,5 +43,72 @@ function buildCircuit(durationMinutes, focus, difficulty) {
   return circuit;
 }
 
-// temporary — verify the generator works before building the UI around it
-console.log(buildCircuit(20, "full", "medium"));
+function renderDots() {
+  progressDots.innerHTML = "";
+  currentCircuit.forEach((_, i) => {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    progressDots.appendChild(dot);
+  });
+}
+
+function updateDots(index) {
+  [...progressDots.children].forEach((dot, i) => {
+    dot.classList.toggle("done", i < index);
+    dot.classList.toggle("current", i === index);
+  });
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+  const s = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function showView(view) {
+  [setupView, workoutView, summaryView].forEach(v => v.hidden = true);
+  view.hidden = false;
+}
+
+setupForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const duration = Number(document.getElementById("duration").value);
+  const focus = document.getElementById("focus").value;
+  const difficulty = document.getElementById("difficulty").value;
+
+  currentCircuit = buildCircuit(duration, focus, difficulty);
+  renderDots();
+  showView(workoutView);
+  startTimer();
+});
+
+function startTimer() {
+  currentTimer = createCircuitTimer(currentCircuit, {
+    onPhaseChange: (phase, index) => {
+      const exercise = currentCircuit[index];
+      phaseLabel.textContent = phase === "work" ? "WORK" : "REST";
+      phaseLabel.classList.toggle("rest", phase === "rest");
+      exerciseName.textContent = exercise.name;
+      exerciseInstructions.textContent = phase === "work"
+        ? exercise.instructions
+        : "Catch your breath — next one's coming up.";
+      updateDots(index);
+    },
+    onTick: (secondsLeft) => {
+      timerDisplay.textContent = formatTime(secondsLeft);
+    },
+    onComplete: () => {
+      console.log("workout complete");
+    }
+  });
+  currentTimer.start();
+}
+
+pauseBtn.addEventListener("click", () => {
+  const paused = currentTimer.togglePause();
+  pauseBtn.textContent = paused ? "Resume" : "Pause";
+});
+
+skipBtn.addEventListener("click", () => {
+  currentTimer.skip();
+});

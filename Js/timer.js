@@ -1,3 +1,5 @@
+const WORK_SECONDS = 40;
+const REST_SECONDS = 20;
 function createCircuitTimer(circuit, callbacks) {
   let index = 0;
   let phase = "work"; // "work" | "rest"

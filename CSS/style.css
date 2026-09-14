@@ -103,3 +103,39 @@ body {
   margin-bottom: 12px;
   font-size: 14px;
 }
+#workout-view { text-align: center; padding-top: 12px; }
+
+.progress-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
+.progress-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border); }
+.progress-dots .dot.done { background: var(--color-rest); }
+.progress-dots .dot.current { background: var(--color-work); }
+
+.phase-label {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--color-work);
+  margin: 0;
+}
+.phase-label.rest { color: var(--color-rest); }
+
+.exercise-name { font-size: 24px; font-weight: 700; margin: 8px 0 4px; }
+.exercise-instructions { color: var(--color-text-muted); min-height: 44px; }
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 64px;
+  font-variant-numeric: tabular-nums;
+  margin: 16px 0;
+}
+
+.timer-controls { display: flex; gap: 12px; justify-content: center; }
+.timer-controls button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 15px;
+  cursor: pointer;
+}
