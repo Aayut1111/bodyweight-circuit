@@ -55,3 +55,51 @@ body {
   font-size: 13px;
   padding: 20px;
 }
+#setup-form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+.field select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+#start-btn, #restart-btn {
+  background: var(--color-work);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+#start-btn:hover, #restart-btn:hover { opacity: 0.9; }
+
+.streak-badge {
+  text-align: center;
+  background: var(--color-rest);
+  color: white;
+  border-radius: 999px;
+  padding: 6px 14px;
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
