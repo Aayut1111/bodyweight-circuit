@@ -110,6 +110,16 @@ body {
 .progress-dots .dot.done { background: var(--color-rest); }
 .progress-dots .dot.current { background: var(--color-work); }
 
+.exercise-icon {
+  width: 128px;
+  height: 128px;
+  margin: 0 auto;
+  color: var(--color-work);
+  transition: color 0.2s ease;
+}
+.exercise-icon.rest { color: var(--color-rest); }
+.exercise-icon svg { width: 100%; height: 100%; display: block; }
+
 .phase-label {
   font-family: var(--font-display);
   font-size: 22px;
@@ -144,7 +154,17 @@ body {
 #summary-list li {
   padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
+.summary-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--color-work);
+}
+.summary-icon svg { width: 100%; height: 100%; display: block; }
 
 #start-btn:active, #restart-btn:active,
 .timer-controls button:active {

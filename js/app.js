@@ -4,6 +4,7 @@ const summaryView = document.getElementById("summary-view");
 
 const setupForm = document.getElementById("setup-form");
 const phaseLabel = document.getElementById("phase-label");
+const exerciseIcon = document.getElementById("exercise-icon");
 const exerciseName = document.getElementById("exercise-name");
 const exerciseInstructions = document.getElementById("exercise-instructions");
 const timerDisplay = document.getElementById("timer-display");
@@ -88,6 +89,8 @@ function startTimer() {
       const exercise = currentCircuit[index];
       phaseLabel.textContent = phase === "work" ? "WORK" : "REST";
       phaseLabel.classList.toggle("rest", phase === "rest");
+      exerciseIcon.innerHTML = EXERCISE_ICONS[exercise.id] || EXERCISE_ICONS.default;
+      exerciseIcon.classList.toggle("rest", phase === "rest");
       exerciseName.textContent = exercise.name;
       exerciseInstructions.textContent = phase === "work"
         ? exercise.instructions
@@ -117,12 +120,23 @@ const summaryList = document.getElementById("summary-list");
 const restartBtn = document.getElementById("restart-btn");
 
 function finishWorkout() {
-  const uniqueNames = [...new Set(currentCircuit.map(ex => ex.name))];
+  const seen = new Set();
+  const uniqueExercises = currentCircuit.filter(ex => {
+    if (seen.has(ex.id)) return false;
+    seen.add(ex.id);
+    return true;
+  });
   summaryStats.textContent = `${currentCircuit.length} exercises completed.`;
   summaryList.innerHTML = "";
-  uniqueNames.forEach(name => {
+  uniqueExercises.forEach(ex => {
     const li = document.createElement("li");
-    li.textContent = name;
+    const icon = document.createElement("span");
+    icon.className = "summary-icon";
+    icon.innerHTML = EXERCISE_ICONS[ex.id] || EXERCISE_ICONS.default;
+    const label = document.createElement("span");
+    label.textContent = ex.name;
+    li.appendChild(icon);
+    li.appendChild(label);
     summaryList.appendChild(li);
   });
   recordCompletion();
