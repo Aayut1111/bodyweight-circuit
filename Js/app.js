@@ -125,9 +125,50 @@ function finishWorkout() {
     li.textContent = name;
     summaryList.appendChild(li);
   });
+  recordCompletion();
   showView(summaryView);
 }
 
 restartBtn.addEventListener("click", () => {
   showView(setupView);
+  renderStreak();
 });
+
+function recordCompletion() {
+  const today = new Date().toISOString().slice(0, 10);
+  const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+  if (!history.includes(today)) {
+    history.push(today);
+    localStorage.setItem("workoutHistory", JSON.stringify(history));
+  }
+}
+
+function computeStreak() {
+  const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+  const daySet = new Set(history);
+  let streak = 0;
+  let cursor = new Date();
+  while (true) {
+    const key = cursor.toISOString().slice(0, 10);
+    if (daySet.has(key)) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function renderStreak() {
+  const badge = document.getElementById("streak-badge");
+  const streak = computeStreak();
+  if (streak > 0) {
+    badge.hidden = false;
+    badge.textContent = `🔥 ${streak} day streak`;
+  } else {
+    badge.hidden = true;
+  }
+}
+
+renderStreak();
