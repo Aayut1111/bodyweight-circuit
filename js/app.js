@@ -14,6 +14,7 @@ const skipBtn = document.getElementById("skip-btn");
 
 let currentCircuit = [];
 let currentTimer = null;
+let currentSessionMeta = {};
 
 function shuffle(array) {
   const copy = [...array];
@@ -77,6 +78,7 @@ setupForm.addEventListener("submit", e => {
   const focus = document.getElementById("focus").value;
   const difficulty = document.getElementById("difficulty").value;
 
+  currentSessionMeta = { duration, focus, difficulty };
   currentCircuit = buildCircuit(duration, focus, difficulty);
   renderDots();
   showView(workoutView);
@@ -139,27 +141,38 @@ function finishWorkout() {
     li.appendChild(label);
     summaryList.appendChild(li);
   });
-  recordCompletion();
+
+  const entry = recordCompletion({
+    duration: currentSessionMeta.duration,
+    focus: currentSessionMeta.focus,
+    difficulty: currentSessionMeta.difficulty,
+    exerciseCount: currentCircuit.length,
+    exerciseNames: uniqueExercises.map(ex => ex.name)
+  });
+
+  logWorkoutToCalendar(entry);
   showView(summaryView);
 }
 
-restartBtn.addEventListener("click", () => {
-  showView(setupView);
-  renderStreak();
-});
-
-function recordCompletion() {
+function recordCompletion(sessionDetails) {
   const today = new Date().toISOString().slice(0, 10);
   const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
-  if (!history.includes(today)) {
-    history.push(today);
-    localStorage.setItem("workoutHistory", JSON.stringify(history));
-  }
+  const entry = {
+    date: today,
+    duration: sessionDetails.duration,
+    focus: sessionDetails.focus,
+    difficulty: sessionDetails.difficulty,
+    exerciseCount: sessionDetails.exerciseCount,
+    exerciseNames: sessionDetails.exerciseNames
+  };
+  history.push(entry);
+  localStorage.setItem("workoutHistory", JSON.stringify(history));
+  return entry;
 }
 
 function computeStreak() {
   const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
-  const daySet = new Set(history);
+  const daySet = new Set(history.map(h => (typeof h === "string" ? h : h.date)));
   let streak = 0;
   let cursor = new Date();
   while (true) {
@@ -172,8 +185,28 @@ function computeStreak() {
     }
   }
   return streak;
-}
+} 
+window.addEventListener("load", () => {
+  if (window.google) initGoogleAuth();
+  updateCalendarButton();
 
+  document.getElementById("connect-calendar-btn").addEventListener("click", ensureGoogleAuth);
+
+  const syncToggle = document.getElementById("calendar-sync-toggle");
+  syncToggle.checked = localStorage.getItem("calendarSyncEnabled") === "true";
+  syncToggle.addEventListener("change", () => {
+    localStorage.setItem("calendarSyncEnabled", syncToggle.checked ? "true" : "false");
+  });
+
+  document.getElementById("reminder-time").value = localStorage.getItem("reminderTime") || "18:00";
+  document.getElementById("set-reminder-btn").addEventListener("click", () => {
+    setRecurringReminder(document.getElementById("reminder-time").value);
+  });
+
+  document.getElementById("enable-notifications-btn").addEventListener("click", requestNotificationPermission);
+});
+
+renderStreak();
 function renderStreak() {
   const badge = document.getElementById("streak-badge");
   const streak = computeStreak();

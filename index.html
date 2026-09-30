@@ -17,6 +17,19 @@
   <main id="app">
     <section id="setup-view" class="view">
       <div id="streak-badge" class="streak-badge" hidden></div>
+      <div id="settings" class="settings">
+  <button id="connect-calendar-btn" type="button">Connect Google Calendar</button>
+  <label class="field-inline">
+    <input type="checkbox" id="calendar-sync-toggle">
+    Log completed workouts to my calendar
+  </label>
+  <div class="field">
+    <label for="reminder-time">Daily reminder time</label>
+    <input type="time" id="reminder-time" value="18:00">
+  </div>
+  <button id="set-reminder-btn" type="button">Set recurring calendar reminder</button>
+  <button id="enable-notifications-btn" type="button">Enable browser reminders</button>
+</div>
       <form id="setup-form">
         <div class="field">
           <label for="duration">Duration</label>
@@ -72,9 +85,12 @@
     <p>Built with vanilla HTML, CSS &amp; JavaScript.</p>
   </footer>
 
-  <script src="js/exercises.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/timer.js"></script>
-  <script src="js/app.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/exercises.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/reminders.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
