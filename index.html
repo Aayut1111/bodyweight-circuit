@@ -87,4 +87,40 @@
     </section>
 
     <section id="workout-view" class="view" hidden>
-      <div
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="exercise-icon" id="exercise-icon"></div>
+      <p class="phase-label" id="phase-label">WORK</p>
+      <p class="exercise-name" id="exercise-name">—</p>
+      <p class="exercise-instructions" id="exercise-instructions">—</p>
+      <p class="timer-display" id="timer-display">00:00</p>
+      <div class="timer-controls">
+        <button id="pause-btn" type="button">Pause</button>
+        <button id="skip-btn" type="button">Skip</button>
+      </div>
+    </section>
+
+    <section id="summary-view" class="view" hidden>
+      <h2>Workout Complete</h2>
+      <p id="summary-stats"></p>
+      <ul id="summary-list"></ul>
+      <button id="restart-btn" type="button">Do Another Workout</button>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Built with vanilla HTML, CSS &amp; JavaScript.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/reminders.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
