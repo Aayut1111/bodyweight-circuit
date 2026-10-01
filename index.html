@@ -16,6 +16,18 @@
 
   <main id="app">
     <section id="setup-view" class="view">
+      <div id="auth-logged-out" class="auth-box">
+  <input type="email" id="auth-email" placeholder="Email">
+  <input type="password" id="auth-password" placeholder="Password">
+  <div class="auth-buttons">
+    <button id="signup-btn" type="button">Sign Up</button>
+    <button id="signin-btn" type="button">Sign In</button>
+  </div>
+</div>
+<div id="auth-logged-in" class="auth-box" hidden>
+  Signed in as <strong id="auth-email-label"></strong>
+  <button id="signout-btn" type="button">Sign Out</button>
+</div>
       <div id="streak-badge" class="streak-badge" hidden></div>
       <div id="settings" class="settings">
   <button id="connect-calendar-btn" type="button">Connect Google Calendar</button>
@@ -85,10 +97,14 @@
     <p>Built with vanilla HTML, CSS &amp; JavaScript.</p>
   </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="js/exercises.js"></script>
 <script src="js/icons.js"></script>
 <script src="js/timer.js"></script>
+<script src="js/supabaseClient.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/reminders.js"></script>
 <script src="js/app.js"></script>

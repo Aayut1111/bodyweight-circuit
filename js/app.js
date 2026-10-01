@@ -16,6 +16,32 @@ let currentCircuit = [];
 let currentTimer = null;
 let currentSessionMeta = {};
 
+async function syncHistoryFromServer() {
+  try {
+    const serverHistory = await fetchWorkoutHistory();
+    const localHistory = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+    const localDates = new Set(localHistory.map(h => typeof h === "string" ? h : h.date));
+
+    serverHistory.forEach(row => {
+      if (!localDates.has(row.date)) {
+        localHistory.push({
+          date: row.date,
+          duration: row.duration,
+          focus: row.focus,
+          difficulty: row.difficulty,
+          exerciseCount: row.exercise_count,
+          exerciseNames: row.exercise_names,
+        });
+      }
+    });
+
+    localStorage.setItem("workoutHistory", JSON.stringify(localHistory));
+    renderStreak();
+  } catch (err) {
+    console.error("Failed to sync history from server:", err);
+  }
+}
+
 function shuffle(array) {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -151,6 +177,9 @@ function finishWorkout() {
   });
 
   logWorkoutToCalendar(entry);
+  if (currentUser) {
+  saveWorkoutToServer(entry).catch(err => console.error("Sync to server failed:", err));
+}
   showView(summaryView);
 }
 
@@ -187,6 +216,15 @@ function computeStreak() {
   return streak;
 } 
 window.addEventListener("load", () => {
+  document.getElementById("signup-btn").addEventListener("click", () => {
+  signUp(document.getElementById("auth-email").value, document.getElementById("auth-password").value);
+});
+document.getElementById("signin-btn").addEventListener("click", () => {
+  signIn(document.getElementById("auth-email").value, document.getElementById("auth-password").value);
+});
+document.getElementById("signout-btn").addEventListener("click", signOut);
+
+initAuth();
   if (window.google) initGoogleAuth();
   updateCalendarButton();
 
