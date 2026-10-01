@@ -14,33 +14,7 @@ const skipBtn = document.getElementById("skip-btn");
 
 let currentCircuit = [];
 let currentTimer = null;
-let currentSessionMeta = {};
-
-async function syncHistoryFromServer() {
-  try {
-    const serverHistory = await fetchWorkoutHistory();
-    const localHistory = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
-    const localDates = new Set(localHistory.map(h => typeof h === "string" ? h : h.date));
-
-    serverHistory.forEach(row => {
-      if (!localDates.has(row.date)) {
-        localHistory.push({
-          date: row.date,
-          duration: row.duration,
-          focus: row.focus,
-          difficulty: row.difficulty,
-          exerciseCount: row.exercise_count,
-          exerciseNames: row.exercise_names,
-        });
-      }
-    });
-
-    localStorage.setItem("workoutHistory", JSON.stringify(localHistory));
-    renderStreak();
-  } catch (err) {
-    console.error("Failed to sync history from server:", err);
-  }
-}
+let currentSessionDetails = null;
 
 function shuffle(array) {
   const copy = [...array];
@@ -104,8 +78,8 @@ setupForm.addEventListener("submit", e => {
   const focus = document.getElementById("focus").value;
   const difficulty = document.getElementById("difficulty").value;
 
-  currentSessionMeta = { duration, focus, difficulty };
   currentCircuit = buildCircuit(duration, focus, difficulty);
+  currentSessionDetails = { duration, focus, difficulty };
   renderDots();
   showView(workoutView);
   startTimer();
@@ -167,25 +141,27 @@ function finishWorkout() {
     li.appendChild(label);
     summaryList.appendChild(li);
   });
-
-  const entry = recordCompletion({
-    duration: currentSessionMeta.duration,
-    focus: currentSessionMeta.focus,
-    difficulty: currentSessionMeta.difficulty,
+  recordCompletion({
+    ...currentSessionDetails,
     exerciseCount: currentCircuit.length,
     exerciseNames: uniqueExercises.map(ex => ex.name)
   });
-
-  logWorkoutToCalendar(entry);
-  if (currentUser) {
-  saveWorkoutToServer(entry).catch(err => console.error("Sync to server failed:", err));
-}
   showView(summaryView);
+}
+
+restartBtn.addEventListener("click", () => {
+  showView(setupView);
+  renderStreak();
+});
+
+function historyKey() {
+  const email = (typeof currentUser !== "undefined" && currentUser) ? currentUser.email.toLowerCase() : "guest";
+  return `workoutHistory:${email}`;
 }
 
 function recordCompletion(sessionDetails) {
   const today = new Date().toISOString().slice(0, 10);
-  const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+  const history = JSON.parse(localStorage.getItem(historyKey()) || "[]");
   const entry = {
     date: today,
     duration: sessionDetails.duration,
@@ -195,12 +171,12 @@ function recordCompletion(sessionDetails) {
     exerciseNames: sessionDetails.exerciseNames
   };
   history.push(entry);
-  localStorage.setItem("workoutHistory", JSON.stringify(history));
+  localStorage.setItem(historyKey(), JSON.stringify(history));
   return entry;
 }
 
 function computeStreak() {
-  const history = JSON.parse(localStorage.getItem("workoutHistory") || "[]");
+  const history = JSON.parse(localStorage.getItem(historyKey()) || "[]");
   const daySet = new Set(history.map(h => (typeof h === "string" ? h : h.date)));
   let streak = 0;
   let cursor = new Date();
@@ -214,37 +190,8 @@ function computeStreak() {
     }
   }
   return streak;
-} 
-window.addEventListener("load", () => {
-  document.getElementById("signup-btn").addEventListener("click", () => {
-  signUp(document.getElementById("auth-email").value, document.getElementById("auth-password").value);
-});
-document.getElementById("signin-btn").addEventListener("click", () => {
-  signIn(document.getElementById("auth-email").value, document.getElementById("auth-password").value);
-});
-document.getElementById("signout-btn").addEventListener("click", signOut);
+}
 
-initAuth();
-  if (window.google) initGoogleAuth();
-  updateCalendarButton();
-
-  document.getElementById("connect-calendar-btn").addEventListener("click", ensureGoogleAuth);
-
-  const syncToggle = document.getElementById("calendar-sync-toggle");
-  syncToggle.checked = localStorage.getItem("calendarSyncEnabled") === "true";
-  syncToggle.addEventListener("change", () => {
-    localStorage.setItem("calendarSyncEnabled", syncToggle.checked ? "true" : "false");
-  });
-
-  document.getElementById("reminder-time").value = localStorage.getItem("reminderTime") || "18:00";
-  document.getElementById("set-reminder-btn").addEventListener("click", () => {
-    setRecurringReminder(document.getElementById("reminder-time").value);
-  });
-
-  document.getElementById("enable-notifications-btn").addEventListener("click", requestNotificationPermission);
-});
-
-renderStreak();
 function renderStreak() {
   const badge = document.getElementById("streak-badge");
   const streak = computeStreak();
@@ -255,5 +202,3 @@ function renderStreak() {
     badge.hidden = true;
   }
 }
-
-renderStreak();

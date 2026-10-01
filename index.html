@@ -15,15 +15,32 @@
   </header>
 
   <main id="app">
-    <section id="setup-view" class="view">
-      <div id="auth-logged-out" class="auth-box">
-  <input type="email" id="auth-email" placeholder="Email">
-  <input type="password" id="auth-password" placeholder="Password">
-  <div class="auth-buttons">
-    <button id="signup-btn" type="button">Sign Up</button>
-    <button id="signin-btn" type="button">Sign In</button>
+    <section id="auth-view" class="view">
+  <div id="auth-logged-out" class="auth-box">
+    <h2>Welcome Back</h2>
+    <div class="field">
+      <label for="auth-email">Email</label>
+      <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label for="auth-password">Password</label>
+      <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <p id="auth-error" class="auth-error" hidden></p>
+    <div class="auth-buttons">
+      <button id="signin-btn" type="button">Sign In</button>
+      <button id="signup-btn" type="button" class="secondary">Sign Up</button>
+    </div>
   </div>
-</div>
+</section>
+   <section id="setup-view" class="view" hidden>
+  <div id="auth-logged-in" class="auth-box auth-bar">
+    <span>Signed in as <strong id="auth-email-label"></strong></span>
+    <button id="signout-btn" type="button">Sign Out</button>
+  </div>
+  <div id="streak-badge" class="streak-badge" hidden></div>
+  <form id="setup-form">
+    <!-- unchanged -->
 <div id="auth-logged-in" class="auth-box" hidden>
   Signed in as <strong id="auth-email-label"></strong>
   <button id="signout-btn" type="button">Sign Out</button>
