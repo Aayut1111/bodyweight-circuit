@@ -141,18 +141,16 @@ function finishWorkout() {
     li.appendChild(label);
     summaryList.appendChild(li);
   });
-  recordCompletion({
+  const entry = recordCompletion({
     ...currentSessionDetails,
     exerciseCount: currentCircuit.length,
     exerciseNames: uniqueExercises.map(ex => ex.name)
   });
+  if (typeof logWorkoutToCalendar === "function") {
+    logWorkoutToCalendar(entry);
+  }
   showView(summaryView);
 }
-
-restartBtn.addEventListener("click", () => {
-  showView(setupView);
-  renderStreak();
-});
 
 function historyKey() {
   const email = (typeof currentUser !== "undefined" && currentUser) ? currentUser.email.toLowerCase() : "guest";

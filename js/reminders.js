@@ -5,7 +5,16 @@ function requestNotificationPermission() {
   }
   Notification.requestPermission().then(permission => {
     localStorage.setItem("notificationsEnabled", permission === "granted" ? "true" : "false");
+    updateNotificationButton();
   });
+}
+
+function updateNotificationButton() {
+  const btn = document.getElementById("enable-notifications-btn");
+  if (!btn || !("Notification" in window)) return;
+  btn.textContent = Notification.permission === "granted"
+    ? "Browser Reminders Enabled ✓"
+    : "Enable browser reminders";
 }
 
 function hasWorkedOutToday() {
@@ -34,6 +43,12 @@ function checkReminder() {
     localStorage.setItem("lastNotifiedDate", today);
   }
 }
+
+window.addEventListener("load", () => {
+  updateNotificationButton();
+  const btn = document.getElementById("enable-notifications-btn");
+  if (btn) btn.addEventListener("click", requestNotificationPermission);
+});
 
 setInterval(checkReminder, 60000);
 checkReminder();

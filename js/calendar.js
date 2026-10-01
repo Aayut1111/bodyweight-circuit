@@ -1,4 +1,4 @@
-const GOOGLE_CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "http://377215325640-n0ve2cuaq96fqfd9i4ae257atorrh8c6.apps.googleusercontent.com";
 const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events";
 
 let tokenClient = null;
@@ -100,3 +100,44 @@ function updateCalendarButton() {
   const connected = localStorage.getItem("calendarConnected") === "true";
   btn.textContent = connected ? "Google Calendar Connected ✓" : "Connect Google Calendar";
 }
+
+function ensureGoogleClientReady() {
+  if (tokenClient) return true;
+  if (typeof google === "undefined" || !google.accounts) {
+    alert("Google sign-in hasn't finished loading yet. Please wait a moment and try again.");
+    return false;
+  }
+  initGoogleAuth();
+  return true;
+}
+
+window.addEventListener("load", () => {
+  updateCalendarButton();
+
+  const syncToggle = document.getElementById("calendar-sync-toggle");
+  syncToggle.checked = localStorage.getItem("calendarSyncEnabled") === "true";
+  syncToggle.addEventListener("change", () => {
+    localStorage.setItem("calendarSyncEnabled", syncToggle.checked ? "true" : "false");
+  });
+
+  document.getElementById("connect-calendar-btn").addEventListener("click", async () => {
+    if (!ensureGoogleClientReady()) return;
+    const token = await ensureGoogleAuth();
+    if (!token) alert("Couldn't connect to Google Calendar. Please try again.");
+  });
+
+  const reminderTimeInput = document.getElementById("reminder-time");
+  const savedReminderTime = localStorage.getItem("reminderTime");
+  if (savedReminderTime) reminderTimeInput.value = savedReminderTime;
+
+  document.getElementById("set-reminder-btn").addEventListener("click", async () => {
+    if (!ensureGoogleClientReady()) return;
+    const time = reminderTimeInput.value;
+    if (!time) {
+      alert("Pick a reminder time first.");
+      return;
+    }
+    await setRecurringReminder(time);
+    alert(`Daily reminder set for ${time}.`);
+  });
+});
