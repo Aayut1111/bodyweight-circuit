@@ -98,7 +98,11 @@ function startTimer() {
         ? exercise.instructions
         : "Catch your breath — next one's coming up.";
       updateDots(index);
-    },
+      if (window.FormCheck) {
+    window.FormCheck.setCurrentExercise(phase === "work" ? exercise.id : null);
+  }
+},
+    
     onTick: (secondsLeft) => {
       timerDisplay.textContent = formatTime(secondsLeft);
     },
@@ -108,6 +112,35 @@ function startTimer() {
   });
   currentTimer.start();
 }
+const formCheckToggle = document.getElementById("form-check-toggle");
+let formCheckEnabled = false;
+
+formCheckToggle.addEventListener("click", async () => {
+  const video = document.getElementById("form-check-video");
+  const canvas = document.getElementById("form-check-canvas");
+  const feedback = document.getElementById("form-feedback");
+
+  if (!formCheckEnabled) {
+    formCheckToggle.textContent = "Loading camera…";
+    try {
+      await window.FormCheck.start();
+      canvas.hidden = false;
+      feedback.hidden = false;
+      formCheckToggle.textContent = "Disable Form Check";
+      formCheckEnabled = true;
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't access your camera. Check site permissions and try again.");
+      formCheckToggle.textContent = "Enable Form Check";
+    }
+  } else {
+    window.FormCheck.stop();
+    canvas.hidden = true;
+    feedback.hidden = true;
+    formCheckToggle.textContent = "Enable Form Check";
+    formCheckEnabled = false;
+  }
+});
 
 pauseBtn.addEventListener("click", () => {
   const paused = currentTimer.togglePause();

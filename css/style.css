@@ -302,3 +302,45 @@ body {
 #enable-notifications-btn:active {
   transform: scale(0.97);
 }
+
+@media (max-width: 420px) {
+  .app-header h1 { font-size: 36px; }
+  .timer-display { font-size: 48px; }
+  #app { padding: 0 16px 32px; }
+}
+
+.camera-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 16px auto 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+#form-check-canvas { display: block; width: 100%; height: auto; }
+
+.form-feedback {
+  margin: 12px auto 0;
+  max-width: 360px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.form-feedback.good { background: var(--color-rest); color: white; }
+.form-feedback.warning { background: var(--color-work); color: white; }
+.form-feedback.neutral { background: var(--color-border); color: var(--color-text); }
+
+#form-check-toggle {
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+}
