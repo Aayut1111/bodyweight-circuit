@@ -1,4 +1,4 @@
-const GOOGLE_CLIENT_ID = "http://377215325640-n0ve2cuaq96fqfd9i4ae257atorrh8c6.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "377215325640-n0ve2cuaq96fqfd9i4ae257atorrh8c6.apps.googleusercontent.com";
 const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events";
 
 let tokenClient = null;

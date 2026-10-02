@@ -253,3 +253,52 @@ body {
   .timer-display { font-size: 48px; }
   #app { padding: 0 16px 32px; }
 }
+.settings {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.field-inline input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-work);
+}
+
+#connect-calendar-btn,
+#set-reminder-btn,
+#enable-notifications-btn {
+  background: var(--color-work);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+#connect-calendar-btn:hover,
+#set-reminder-btn:hover,
+#enable-notifications-btn:hover {
+  opacity: 0.9;
+}
+#connect-calendar-btn:active,
+#set-reminder-btn:active,
+#enable-notifications-btn:active {
+  transform: scale(0.97);
+}
