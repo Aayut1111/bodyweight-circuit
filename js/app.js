@@ -153,6 +153,17 @@ skipBtn.addEventListener("click", () => {
 const summaryStats = document.getElementById("summary-stats");
 const summaryList = document.getElementById("summary-list");
 const restartBtn = document.getElementById("restart-btn");
+  showView(summaryView);
+
+restartBtn.addEventListener("click", () => {
+  showView(setupView);
+  renderStreak();
+});
+
+function historyKey() {
+  const email = (typeof currentUser !== "undefined" && currentUser) ? currentUser.email.toLowerCase() : "guest";
+  return `workoutHistory:${email}`;
+}
 
 function finishWorkout() {
   const seen = new Set();
